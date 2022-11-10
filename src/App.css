@@ -36,3 +36,80 @@
     transform: rotate(360deg);
   }
 }
+
+.mainContainer {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-top: 64px;
+}
+body {
+  background-color: #a8e2ff
+}
+
+.dataContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  max-width: 600px;
+}
+
+.header {
+  text-align: center;
+  font-size: 32px;
+  font-weight: 600;
+
+}
+
+.bio {
+  text-align: center;
+  color: gray;
+  margin-top: 16px;
+}
+
+.spinButton {
+  cursor: pointer;
+  margin-top: 16px;
+  color:white;
+  padding: 8px;
+  border: 0;
+  border-radius: 5px;
+  background-image: linear-gradient(to bottom right, #6404a4, #ab3df5);
+}
+
+.connectButton {
+  cursor: pointer;
+  margin-top: 16px;
+  padding: 8px;
+  border: 0;
+  color:white;
+  border-radius: 5px;
+  background-image: linear-gradient(to bottom right, #6404a4, #ab3df5);
+}
+
+.betButton {
+  text-align: center;
+  margin-top: 16px;
+  padding: 8px;
+  border: 0;
+  border-radius: 5px;
+}
+
+.betBox {
+  text-align: center;
+  cursor: pointer;
+  margin-top: 16px;
+  padding: 8px;
+  border: 10;
+  border-radius: 60px;
+}
+
+.betForm{
+  text-align: center;
+}
+
+.machineSymbols {
+  text-align: center;
+  font-size: 72px;
+  padding: 20px;
+}
