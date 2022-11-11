@@ -58,6 +58,12 @@ const App = () => {
   const [valC, setValC] = useState("❓");
   const [betAmount, setBetAmount] = useState('');
 
+  const checkwallet = async() => { const account = await findMetaMaskAccount();
+    if (account !== null) {
+      setCurrentAccount(account);
+    }
+  }
+
   const connectWallet = async () => {
     try {
       const ethereum = getEthereumObject();
@@ -89,7 +95,7 @@ const App = () => {
       setValC(tempC);
       setBetAmount('');
       
-      if(tempA==tempB && tempB==tempC)
+      if(tempA===tempB && tempB===tempC)
       {
         alert("Congratulations! You Won!");
       }
@@ -110,11 +116,8 @@ const App = () => {
    * The passed callback function will be run when the page loads.
    * More technically, when the App component "mounts".
    */
-  useEffect(async () => {
-    const account = await findMetaMaskAccount();
-    if (account !== null) {
-      setCurrentAccount(account);
-    }
+  useEffect(() => {
+    checkwallet();
   }, []);
 
   const onInputChange = (event) => {

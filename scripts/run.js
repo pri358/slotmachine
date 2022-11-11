@@ -1,26 +1,26 @@
 const main = async () => {
     const [owner, randomPerson] = await hre.ethers.getSigners();
-    const lockContractFactory = await hre.ethers.getContractFactory("Lock");
-    const lockContract = await lockContractFactory.deploy({
+    const slotMachineContractFactory = await hre.ethers.getContractFactory("SlotMachine");
+    const slotMachineContract = await slotMachineContractFactory.deploy({
       value: hre.ethers.utils.parseEther("0.1"),
     });
 
     let contractBalance = await hre.ethers.provider.getBalance(
-      lockContract.address
+      slotMachineContract.address
     );
     console.log(
       "Contract balance:",
       hre.ethers.utils.formatEther(contractBalance)
     );
 
-    await lockContract.deployed();
-    console.log("Contract deployed to:", lockContract.address);
+    await slotMachineContract.deployed();
+    console.log("Contract deployed to:", slotMachineContract.address);
     console.log("Owner of the contract:", owner.address);
 
-    const randNums = await lockContract.logicOfLuck("0.23");
+    const randNums = await slotMachineContract.logicOfLuck("0.23");
     await randNums.wait();
 
-    contractBalance = await hre.ethers.provider.getBalance(lockContract.address);
+    contractBalance = await hre.ethers.provider.getBalance(slotMachineContract.address);
   console.log(
     "Contract balance:",
     hre.ethers.utils.formatEther(contractBalance)
