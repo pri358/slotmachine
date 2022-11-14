@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./App.css";
+import abi from "artifacts\contracts\SlotMachine.sol\SlotMachine.json";
 
 const getEthereumObject = () => window.ethereum;
 
@@ -58,6 +59,9 @@ const App = () => {
   const [valC, setValC] = useState("❓");
   const [betAmount, setBetAmount] = useState('');
 
+  const contractAddress = "";
+  const contractABI = abi.abi;
+
   const checkwallet = async() => { const account = await findMetaMaskAccount();
     if (account !== null) {
       setCurrentAccount(account);
@@ -109,7 +113,24 @@ const App = () => {
   };
 
   const placeBet = async () => {
-    
+    try {
+      const { ethereum } = window;
+
+      if (ethereum) {
+        const provider = new ethers.providers.Web3Provider(ethereum);
+        const signer = provider.getSigner();
+        const slotMachineContract = new ethers.Contract(contractAddress, contractABI, signer);
+
+        /*
+        let count = await slotMachineContract.getTotalWaves();
+        console.log("Retrieved total wave count...", count.toNumber());
+        */
+      } else {
+        console.log("Ethereum object doesn't exist!");
+      }
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   /*

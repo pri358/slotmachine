@@ -32,8 +32,6 @@ contract SlotMachine {
     function logicOfLuck (string memory _betAmount) public payable {
         // Add functionality to make payout according to bet amount
 
-        // Check if user balance > betAmount
-
         uint8 reel1 = random(1);
         uint8 reel2 = random(2);
         uint8 reel3 = random(3);
