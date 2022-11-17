@@ -60,7 +60,7 @@ const App = () => {
   const [valC, setValC] = useState("❓");
   const [betAmount, setBetAmount] = useState('');
 
-  const contractAddress = "0x01B4A07d20AD707ECd774AD01C4901de5CC2119C";
+  const contractAddress = "0x8bF7A962010ad2F64e89644Ed53713e47e8DF9aE";
   const contractABI = abi.abi;
   const web3 = require('web3');
 

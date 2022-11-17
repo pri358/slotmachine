@@ -5,9 +5,9 @@ import "hardhat/console.sol";
 
 contract SlotMachine {
 
-    mapping(address=>int) public players;
     uint256 public contractBalance;
     uint256 randHelp = 0;
+    event Result(address indexed from, uint256 timestamp, string message);
 
     constructor() payable {
         console.log("Contract here!");
@@ -22,7 +22,7 @@ contract SlotMachine {
     function play(uint256 _betAmount) public payable {
         // Uncomment below code once dummy user has balance
 
-        uint userBalance = msg.value ;
+        uint256 userBalance = msg.value * (10**18); 
         console.log("bet amount ", _betAmount);
         console.log("user balance: ", userBalance);
 
@@ -33,7 +33,7 @@ contract SlotMachine {
 
         emit balances(_betAmount, userBalance, contractBalance);
 
-       //logicOfLuck(_betAmount);
+        logicOfLuck(_betAmount);
     }
 
     function logicOfLuck (uint256 _betAmount) public payable {
@@ -52,20 +52,22 @@ contract SlotMachine {
         console.log("Reel2: ", reel2);
         console.log("Reel3: ", reel3);
 
-        uint256 prizeAmount = 0 ether;
+        uint256 prizeAmount = 0 wei;
 
         if(reel1 == reel2 || reel2 == reel3 || reel3 == reel1) {
             // Check if all same
-            if(reel1 == reel2 && reel2 == reel3) {
-                console.log("JACKPOT! You win 0.1 ETH");
-                prizeAmount = 0.1 ether;
+            if(reel1 == reel2 && reel2 == reel3) {         
+                prizeAmount = _betAmount*3 wei;
+                console.log(prizeAmount);
+                emit Result(msg.sender, block.timestamp, "JACKPOT! You tripled your ETH bet");
             } else {
-                console.log("Congratulations. You win 0.01 ETH");
-                prizeAmount = 0.01 ether;
+                emit Result(msg.sender, block.timestamp, "Congratulations. You doubled your ETH bet");
+                prizeAmount = _betAmount*2 wei;
+                console.log(prizeAmount);
             }
             isWin = true;
         } else {
-            console.log("Loser :) ");
+            emit Result(msg.sender, block.timestamp, "Loser. :)");
         }
         
         if (isWin) {
