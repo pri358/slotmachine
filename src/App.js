@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./App.css";
+import abi from "./utils/SlotMachine.json";
+import { ethers } from "ethers";
 
 const getEthereumObject = () => window.ethereum;
 
@@ -58,6 +60,10 @@ const App = () => {
   const [valC, setValC] = useState("❓");
   const [betAmount, setBetAmount] = useState('');
 
+  const contractAddress = "0x01B4A07d20AD707ECd774AD01C4901de5CC2119C";
+  const contractABI = abi.abi;
+  const web3 = require('web3');
+
   const checkwallet = async() => { const account = await findMetaMaskAccount();
     if (account !== null) {
       setCurrentAccount(account);
@@ -85,31 +91,51 @@ const App = () => {
 
   const onSpin = async () => {
     try {
-      console.log("Bet: ", betAmount);
-      const tempA = await symbolGenerator();
-      const tempB = await symbolGenerator();
-      const tempC = await symbolGenerator();
+      // console.log("Bet: ", betAmount);
+      // const tempA = await symbolGenerator();
+      // const tempB = await symbolGenerator();
+      // const tempC = await symbolGenerator();
 
-      setValA(tempA);
-      setValB(tempB);
-      setValC(tempC);
-      setBetAmount('');
+      // setValA(tempA);
+      // setValB(tempB);
+      // setValC(tempC);
+      // setBetAmount('');
       
-      if(tempA===tempB && tempB===tempC)
-      {
-        alert("Congratulations! You Won!");
-      }
-      else
-      {
-        alert("Loser");
-      }
+      // if(tempA===tempB && tempB===tempC)
+      // {
+      //   alert("Congratulations! You Won!");
+      // }
+      // else
+      // {
+      //   alert("Loser");
+      // }
+      await placeBet();
     } catch (error) {
       console.error(error);
     }
   };
 
   const placeBet = async () => {
-    
+    try {
+      const { ethereum } = window;
+
+      if (ethereum) {
+        const provider = new ethers.providers.Web3Provider(ethereum);
+        const signer = provider.getSigner();
+        const slotMachineContract = new ethers.Contract(contractAddress, contractABI, signer);
+        const betAmountInWei = web3.utils.toWei(betAmount, 'ether');
+        console.log("WEI: ", betAmountInWei);
+        await slotMachineContract.play(betAmountInWei);
+        /*
+        let count = await slotMachineContract.getTotalWaves();
+        console.log("Retrieved total wave count...", count.toNumber());
+        */
+      } else {
+        console.log("Ethereum object doesn't exist!");
+      }
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   /*

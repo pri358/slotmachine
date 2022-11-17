@@ -13,24 +13,30 @@ contract SlotMachine {
         console.log("Contract here!");
     }
 
-    function play(string memory _betAmount) public payable {
+    event balances (
+        uint256 betAmount, 
+        uint256 userBalance, 
+        uint256 contractBalance
+    );
+
+    function play(uint256 _betAmount) public payable {
         // Uncomment below code once dummy user has balance
 
-        /*
-        uint256 userBalance = msg.value;
+        uint userBalance = msg.value ;
+        console.log("bet amount ", _betAmount);
+        console.log("user balance: ", userBalance);
+
         require(userBalance > _betAmount, "User should have enough balance");
         contractBalance = address(this).balance;
-        uint256 winBalance = calculateLoL();
-        if(winBalance > 0){
-            payable(msg.sender).transfer(winBalance);
-            contractBalance = address(this).balance;
-        }
-        */
 
-       logicOfLuck(_betAmount);
+        console.log("contract Balance: ", contractBalance);
+
+        emit balances(_betAmount, userBalance, contractBalance);
+
+       //logicOfLuck(_betAmount);
     }
 
-    function logicOfLuck (string memory _betAmount) public payable {
+    function logicOfLuck (uint256 _betAmount) public payable {
         // Add functionality to make payout according to bet amount
 
         // Check if user balance > betAmount
