@@ -7,6 +7,7 @@ contract SlotMachine {
 
     mapping(address=>int) public players;
     uint256 public contractBalance;
+    uint256 randHelp = 0;
 
     constructor() payable {
         console.log("Contract here!");
@@ -34,9 +35,9 @@ contract SlotMachine {
 
         // Check if user balance > betAmount
 
-        uint8 reel1 = random(1);
-        uint8 reel2 = random(2);
-        uint8 reel3 = random(3);
+        uint8 reel1 = random();
+        uint8 reel2 = random();
+        uint8 reel3 = random();
         bool isWin = false;
 
         console.log("Amount bet: ", _betAmount);
@@ -71,14 +72,18 @@ contract SlotMachine {
         }
     }
 
-    function random(uint8 option) public view returns (uint8) {
-        // Think of better way to randomize for multiple calls at same time
-        if (option == 1) {
-            return uint8(uint256(keccak256(abi.encodePacked(block.timestamp))) % 5) + 1;
-        } else if (option == 2) {
-            return uint8(uint256(keccak256(abi.encodePacked(block.difficulty))) % 10) + 1;
-        } else {
-            return uint8(uint256(keccak256(abi.encodePacked(msg.sender))) % 10) + 1;
-        }
+    function random() public returns (uint8) {
+        // Use available information to produce hash that aids in random number generation
+
+        // Increment value that will help in random number generation
+        randHelp++; 
+        return uint8(uint256(keccak256(abi.encodePacked(block.timestamp,msg.sender,randHelp)))) % 20;
+
+        /* 
+        Another way to solve this would be to use an oracle to access a random number function from 
+        outside the Ethereum blockchain. There are other cryptographic algorithms and third party 
+        functions that can be utilized, but they are not safe or should be audited.
+        Source: https://www.geeksforgeeks.org/random-number-generator-in-solidity-using-keccak256/
+        */
     }
 }
