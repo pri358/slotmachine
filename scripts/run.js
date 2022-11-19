@@ -1,10 +1,10 @@
 const main = async () => {
+    const web3 = require('web3');
     const [owner, randomPerson] = await hre.ethers.getSigners();
     const slotMachineContractFactory = await hre.ethers.getContractFactory("SlotMachine");
     const slotMachineContract = await slotMachineContractFactory.deploy({
-      value: hre.ethers.utils.parseEther("0.1"),
+      value: hre.ethers.utils.parseEther("0.5"),
     });
-
     let contractBalance = await hre.ethers.provider.getBalance(
       slotMachineContract.address
     );
@@ -17,7 +17,7 @@ const main = async () => {
     console.log("Contract deployed to:", slotMachineContract.address);
     console.log("Owner of the contract:", owner.address);
 
-    const randNums = await slotMachineContract.logicOfLuck("0.23");
+    const randNums = await slotMachineContract.play(web3.utils.toWei("0.1", 'ether'));
     await randNums.wait();
 
     contractBalance = await hre.ethers.provider.getBalance(slotMachineContract.address);

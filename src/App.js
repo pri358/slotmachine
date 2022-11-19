@@ -60,7 +60,7 @@ const App = () => {
   const [valC, setValC] = useState("❓");
   const [betAmount, setBetAmount] = useState('');
 
-  const contractAddress = "0x3a1b0A0BC787AB6558878dfd8fC0489808Bfd3A2";
+  const contractAddress = "0x8bF7A962010ad2F64e89644Ed53713e47e8DF9aE";
   const contractABI = abi.abi;
   const web3 = require('web3');
 
@@ -91,24 +91,25 @@ const App = () => {
 
   const onSpin = async () => {
     try {
-      console.log("Bet: ", betAmount);
-      const tempA = await symbolGenerator();
-      const tempB = await symbolGenerator();
-      const tempC = await symbolGenerator();
+      // console.log("Bet: ", betAmount);
+      // const tempA = await symbolGenerator();
+      // const tempB = await symbolGenerator();
+      // const tempC = await symbolGenerator();
 
-      setValA(tempA);
-      setValB(tempB);
-      setValC(tempC);
-      setBetAmount('');
+      // setValA(tempA);
+      // setValB(tempB);
+      // setValC(tempC);
+      // setBetAmount('');
       
-      if(tempA===tempB && tempB===tempC)
-      {
-        alert("Congratulations! You Won!");
-      }
-      else
-      {
-        alert("Loser");
-      }
+      // if(tempA===tempB && tempB===tempC)
+      // {
+      //   alert("Congratulations! You Won!");
+      // }
+      // else
+      // {
+      //   alert("Loser");
+      // }
+      await placeBet();
     } catch (error) {
       console.error(error);
     }
@@ -123,7 +124,7 @@ const App = () => {
         const signer = provider.getSigner();
         const slotMachineContract = new ethers.Contract(contractAddress, contractABI, signer);
         const betAmountInWei = web3.utils.toWei(betAmount, 'ether');
-        
+        console.log("WEI: ", betAmountInWei);
         await slotMachineContract.play(betAmountInWei);
         /*
         let count = await slotMachineContract.getTotalWaves();

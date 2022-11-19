@@ -5,8 +5,9 @@ import "hardhat/console.sol";
 
 contract SlotMachine {
 
-    mapping(address=>int) public players;
     uint256 public contractBalance;
+    uint256 randHelp = 0;
+    event Result(address indexed from, uint256 timestamp, string message);
 
     constructor() payable {
         console.log("Contract here!");
@@ -21,7 +22,7 @@ contract SlotMachine {
     function play(uint256 _betAmount) public payable {
         // Uncomment below code once dummy user has balance
 
-        uint userBalance = msg.value ;
+        uint256 userBalance = msg.value * (10**18); 
         console.log("bet amount ", _betAmount);
         console.log("user balance: ", userBalance);
 
@@ -32,15 +33,17 @@ contract SlotMachine {
 
         emit balances(_betAmount, userBalance, contractBalance);
 
-       //logicOfLuck(_betAmount);
+        logicOfLuck(_betAmount);
     }
 
     function logicOfLuck (uint256 _betAmount) public payable {
         // Add functionality to make payout according to bet amount
 
-        uint8 reel1 = random(1);
-        uint8 reel2 = random(2);
-        uint8 reel3 = random(3);
+        // Check if user balance > betAmount
+
+        uint8 reel1 = random();
+        uint8 reel2 = random();
+        uint8 reel3 = random();
         bool isWin = false;
 
         console.log("Amount bet: ", _betAmount);
@@ -49,20 +52,22 @@ contract SlotMachine {
         console.log("Reel2: ", reel2);
         console.log("Reel3: ", reel3);
 
-        uint256 prizeAmount = 0 ether;
+        uint256 prizeAmount = 0 wei;
 
         if(reel1 == reel2 || reel2 == reel3 || reel3 == reel1) {
             // Check if all same
-            if(reel1 == reel2 && reel2 == reel3) {
-                console.log("JACKPOT! You win 0.1 ETH");
-                prizeAmount = 0.1 ether;
+            if(reel1 == reel2 && reel2 == reel3) {         
+                prizeAmount = _betAmount*3 wei;
+                console.log(prizeAmount);
+                emit Result(msg.sender, block.timestamp, "JACKPOT! You tripled your ETH bet");
             } else {
-                console.log("Congratulations. You win 0.01 ETH");
-                prizeAmount = 0.01 ether;
+                emit Result(msg.sender, block.timestamp, "Congratulations. You doubled your ETH bet");
+                prizeAmount = _betAmount*2 wei;
+                console.log(prizeAmount);
             }
             isWin = true;
         } else {
-            console.log("Loser :) ");
+            emit Result(msg.sender, block.timestamp, "Loser. :)");
         }
         
         if (isWin) {
@@ -75,14 +80,18 @@ contract SlotMachine {
         }
     }
 
-    function random(uint8 option) public view returns (uint8) {
-        // Think of better way to randomize for multiple calls at same time
-        if (option == 1) {
-            return uint8(uint256(keccak256(abi.encodePacked(block.timestamp))) % 5) + 1;
-        } else if (option == 2) {
-            return uint8(uint256(keccak256(abi.encodePacked(block.difficulty))) % 10) + 1;
-        } else {
-            return uint8(uint256(keccak256(abi.encodePacked(msg.sender))) % 10) + 1;
-        }
+    function random() public returns (uint8) {
+        // Use available information to produce hash that aids in random number generation
+
+        // Increment value that will help in random number generation
+        randHelp++; 
+        return uint8(uint256(keccak256(abi.encodePacked(block.timestamp,msg.sender,randHelp)))) % 20;
+
+        /* 
+        Another way to solve this would be to use an oracle to access a random number function from 
+        outside the Ethereum blockchain. There are other cryptographic algorithms and third party 
+        functions that can be utilized, but they are not safe or should be audited.
+        Source: https://www.geeksforgeeks.org/random-number-generator-in-solidity-using-keccak256/
+        */
     }
 }
