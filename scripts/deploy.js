@@ -13,7 +13,7 @@ async function main() {
 
   const SlotMachine = await hre.ethers.getContractFactory("SlotMachine");
   const slotMachine = await SlotMachine.deploy({
-    value: hre.ethers.utils.parseEther("0.1"),
+    value: hre.ethers.utils.parseEther("0.001"),
   });
 
   await slotMachine.deployed();
