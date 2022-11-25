@@ -60,7 +60,7 @@ const App = () => {
   const [valC, setValC] = useState("❓");
   const [betAmount, setBetAmount] = useState('');
 
-  const contractAddress = "0x8bF7A962010ad2F64e89644Ed53713e47e8DF9aE";
+  const contractAddress = "0x25b52FdEA66CE9cB78EC311978c796DCBcCFF219";
   const contractABI = abi.abi;
   const web3 = require('web3');
 
@@ -84,6 +84,7 @@ const App = () => {
 
       console.log("Connected to: ", accounts[0]);
       setCurrentAccount(accounts[0]);
+      SetupEventListener()
     } catch (error) {
       console.error(error);
     }
@@ -109,11 +110,35 @@ const App = () => {
       // {
       //   alert("Loser");
       // }
+      SetupEventListener();
       await placeBet();
     } catch (error) {
       console.error(error);
     }
   };
+
+  const SetupEventListener = async() => {
+    try {
+      const { ethereum } = window;
+
+      if (ethereum) {
+        const provider = new ethers.providers.Web3Provider(ethereum);
+        const signer = provider.getSigner();
+        const slotMachineContract = new ethers.Contract(contractAddress, contractABI, signer);
+        slotMachineContract.on("Result", (from, timestamp, message) => {
+            console.log(from, timestamp, message)
+            console.log("Caught Result event listener!")
+        });
+        slotMachineContract.on("balances", (betAmount, userBalance, contractBalance) => {
+            console.log("Caught Balances event listener!")
+        });
+      } else {
+        console.log("Ethereum object doesn't exist!");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   const placeBet = async () => {
     try {
@@ -126,10 +151,6 @@ const App = () => {
         const betAmountInWei = web3.utils.toWei(betAmount, 'ether');
         console.log("WEI: ", betAmountInWei);
         await slotMachineContract.play(betAmountInWei);
-        /*
-        let count = await slotMachineContract.getTotalWaves();
-        console.log("Retrieved total wave count...", count.toNumber());
-        */
       } else {
         console.log("Ethereum object doesn't exist!");
       }

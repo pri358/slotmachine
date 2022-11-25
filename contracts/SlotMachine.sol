@@ -22,7 +22,7 @@ contract SlotMachine {
     function play(uint256 _betAmount) public payable {
         // Uncomment below code once dummy user has balance
 
-        uint256 userBalance = msg.value * (10**18); 
+        uint256 userBalance =  (msg.sender).balance; // already in wei 
         console.log("bet amount ", _betAmount);
         console.log("user balance: ", userBalance);
 
