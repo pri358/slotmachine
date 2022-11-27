@@ -21,5 +21,9 @@ module.exports = {
       url: process.env.STAGING_QUICKNODE_KEY,
       accounts: [process.env.PRIVATE_KEY]
     },
+    localhost: {
+      chainId: 31337, // Chain ID should match the hardhat network's chainid
+      accounts: [`0xdf57089febbacf7ba0bc227dafbffa9fc08a93fdc68e1e42411a14efcf23656e`],
+    }
   },
 };

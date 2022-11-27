@@ -26,7 +26,7 @@ contract SlotMachine {
         console.log("bet amount ", _betAmount);
         console.log("user balance: ", userBalance);
 
-        require(userBalance > _betAmount, "User should have enough balance");
+        //require(userBalance > _betAmount, "User should have enough balance");
         contractBalance = address(this).balance;
 
         console.log("contract Balance: ", contractBalance);
