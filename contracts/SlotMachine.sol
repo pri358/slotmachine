@@ -8,6 +8,10 @@ contract SlotMachine {
     uint256 public contractBalance;
     uint256 randHelp = 0;
     event Result(address indexed from, uint256 timestamp, string message);
+    event Nums( uint256 reel1, 
+        uint256 reel2, 
+        uint256 reel3
+        );
 
     constructor() payable {
         console.log("Contract here!");
@@ -22,7 +26,7 @@ contract SlotMachine {
     function play(uint256 _betAmount) public payable {
         // Uncomment below code once dummy user has balance
 
-        uint256 userBalance = msg.value * (10**18); 
+        uint256 userBalance =  (msg.sender).balance; // already in wei 
         console.log("bet amount ", _betAmount);
         console.log("user balance: ", userBalance);
 
@@ -44,6 +48,7 @@ contract SlotMachine {
         uint8 reel1 = random();
         uint8 reel2 = random();
         uint8 reel3 = random();
+        emit Nums(reel1, reel2, reel3);
         bool isWin = false;
 
         console.log("Amount bet: ", _betAmount);

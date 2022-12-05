@@ -18,6 +18,13 @@ const main = async () => {
       hre.ethers.utils.formatEther(contractBalance)
     );
 
+    let ownerBalance = await hre.ethers.provider.getBalance(owner.address);
+
+    console.log(
+      "Owner balance:",
+      hre.ethers.utils.formatEther(ownerBalance)
+    );
+
     await slotMachineContract.deployed();
     console.log("Contract deployed to:", slotMachineContract.address);
     console.log("Owner of the contract:", owner.address);
@@ -26,10 +33,7 @@ const main = async () => {
     await randNums.wait();
 
     contractBalance = await hre.ethers.provider.getBalance(slotMachineContract.address);
-  console.log(
-    "Contract balance:",
-    hre.ethers.utils.formatEther(contractBalance)
-  );
+    ownerBalance = await hre.ethers.provider.getBalance(owner.address);
   };
   
   const runMain = async () => {

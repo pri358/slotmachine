@@ -58,9 +58,11 @@ const App = () => {
   const [valA, setValA] = useState("❓");
   const [valB, setValB] = useState("❓");
   const [valC, setValC] = useState("❓");
+  const [resultMessage, setResultMessage] = useState("Yet to play!");
   const [betAmount, setBetAmount] = useState('');
+  const symbols = ['🍇', '🍑', '🍒', '💰', '💸', '🤑', '💵', '♦', '♣', '🎱', '🎁', '🎰', '⛓', '🎯', '🎳', '🎃', '🎉', '👾', '⚡', '🃏'];
 
-  const contractAddress = "0x8bF7A962010ad2F64e89644Ed53713e47e8DF9aE";
+  const contractAddress = "0xAe5e790A471179d56B234a42dFc2170DcBAD94B9";
   const contractABI = abi.abi;
   const web3 = require('web3');
 
@@ -84,36 +86,64 @@ const App = () => {
 
       console.log("Connected to: ", accounts[0]);
       setCurrentAccount(accounts[0]);
+      await SetupEventListener();
     } catch (error) {
       console.error(error);
     }
   };
+
+  const alertWin = async () => {
+    if(valA===valB && valA===valC) {
+      alert("JACKPOT!");
+    }
+    else if(valA===valB || valA===valC || valB===valC) {
+      alert("You win a small prize!");
+    }
+    else {
+      alert("Loser!");
+    }
+  }
 
   const onSpin = async () => {
     try {
-      // console.log("Bet: ", betAmount);
-      // const tempA = await symbolGenerator();
-      // const tempB = await symbolGenerator();
-      // const tempC = await symbolGenerator();
-
-      // setValA(tempA);
-      // setValB(tempB);
-      // setValC(tempC);
-      // setBetAmount('');
-      
-      // if(tempA===tempB && tempB===tempC)
-      // {
-      //   alert("Congratulations! You Won!");
-      // }
-      // else
-      // {
-      //   alert("Loser");
-      // }
+      await SetupEventListener();
       await placeBet();
+      console.log(valA, valB, valC);
     } catch (error) {
       console.error(error);
     }
   };
+
+  const SetupEventListener = async() => {
+    try {
+      const { ethereum } = window;
+
+      if (ethereum) {
+        const provider = new ethers.providers.Web3Provider(ethereum);
+        const signer = provider.getSigner();
+        const slotMachineContract = new ethers.Contract(contractAddress, contractABI, signer);
+        slotMachineContract.on("Nums", (reel1, reel2, reel3) => {
+          console.log(reel1.toNumber(),reel2.toNumber(),reel3.toNumber())
+          setValA(symbols[reel1.toNumber()]);
+          setValB(symbols[reel2.toNumber()]);
+          setValC(symbols[reel3.toNumber()]);
+          console.log("Caught slot numbers!")
+        });
+        slotMachineContract.on("balances", (betAmount, userBalance, contractBalance) => {
+          console.log("Caught Balances event listener!")
+        });
+        slotMachineContract.on("Result", (from, timestamp, message) => {
+            console.log(from, timestamp, message)
+            setResultMessage(message);
+            console.log("Caught Result event listener!")
+        });
+      } else {
+        console.log("Ethereum object doesn't exist!");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   const placeBet = async () => {
     try {
@@ -126,10 +156,6 @@ const App = () => {
         const betAmountInWei = web3.utils.toWei(betAmount, 'ether');
         console.log("WEI: ", betAmountInWei);
         await slotMachineContract.play(betAmountInWei);
-        /*
-        let count = await slotMachineContract.getTotalWaves();
-        console.log("Retrieved total wave count...", count.toNumber());
-        */
       } else {
         console.log("Ethereum object doesn't exist!");
       }
@@ -175,7 +201,6 @@ const App = () => {
           </text>
           <input
             className="betBox"
-            textAlignVertical="top"
             type="text"
             placeholder="Bet Amount"
             value={betAmount}
@@ -188,7 +213,10 @@ const App = () => {
         
         {
           betAmount && (  
-          <button className="spinButton" onClick={onSpin}>
+          <button className="spinButton" onClick={ () => {
+            onSpin();
+          }
+          }>
             Spin Me
           </button>
           )
@@ -203,6 +231,7 @@ const App = () => {
         }
 
         <div className="machineSymbols">{valA}{valB}{valC}</div>
+        <div className="result">{resultMessage}</div>
       </div>
     </div>
   );
