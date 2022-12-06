@@ -113,3 +113,9 @@ body {
   font-size: 72px;
   padding: 20px;
 }
+
+.result {
+  text-align: center;
+  font-size: 32px;
+  font-weight: 600;
+}

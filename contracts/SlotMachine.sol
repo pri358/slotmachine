@@ -8,6 +8,10 @@ contract SlotMachine {
     uint256 public contractBalance;
     uint256 randHelp = 0;
     event Result(address indexed from, uint256 timestamp, string message);
+    event Nums( uint256 reel1, 
+        uint256 reel2, 
+        uint256 reel3
+        );
 
     constructor() payable {
         console.log("Contract here!");
@@ -26,7 +30,7 @@ contract SlotMachine {
         console.log("bet amount ", _betAmount);
         console.log("user balance: ", userBalance);
 
-        require(userBalance > _betAmount, "User should have enough balance");
+        //require(userBalance > _betAmount, "User should have enough balance");
         contractBalance = address(this).balance;
 
         console.log("contract Balance: ", contractBalance);
@@ -44,6 +48,7 @@ contract SlotMachine {
         uint8 reel1 = random();
         uint8 reel2 = random();
         uint8 reel3 = random();
+        emit Nums(reel1, reel2, reel3);
         bool isWin = false;
 
         console.log("Amount bet: ", _betAmount);

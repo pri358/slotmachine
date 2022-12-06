@@ -1,6 +1,11 @@
 const main = async () => {
     const web3 = require('web3');
+    const hre = require("hardhat");
+    require("@nomiclabs/hardhat-ethers");
     const [owner, randomPerson] = await hre.ethers.getSigners();
+    console.log(owner);
+    console.log("------------------");
+    console.log(randomPerson);
     const slotMachineContractFactory = await hre.ethers.getContractFactory("SlotMachine");
     const slotMachineContract = await slotMachineContractFactory.deploy({
       value: hre.ethers.utils.parseEther("0.5"),
